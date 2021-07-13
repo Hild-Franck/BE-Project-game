@@ -1,40 +1,17 @@
 import broker from "./broker"
 import database from "./database"
+import gameTypes from './types'
 
-const randomInt = (max=20, min=0) => Math.floor(min + Math.random() * max)
 const startingTime = process.eventNames.STARTING_TINE || 3000
 const games = {}
-const symbols = [ "+", "-", "*" ]
-const symbolMapping = {
-	"+": {
-		leftMember: () => randomInt(),
-		rightMember: previous => randomInt()
-	},
-	"-": {
-		leftMember: () => randomInt(null, 5),
-		rightMember: previous => randomInt(previous)
-
-	},
-	"*": {
-		leftMember: () => randomInt(10),
-		rightMember: () => randomInt(10)
-	}
-}
-
-const generateQuestion = () => {
-	const symbol = symbols[Math.floor(Math.random() * symbols.length)]
-	const leftMember = symbolMapping[symbol].leftMember()
-	const rightMember = symbolMapping[symbol].rightMember(leftMember)
-	const proposition = `${leftMember} ${symbol} ${rightMember}`
-	return { proposition, answer: eval(proposition) }
-}
 
 export const startGame = async data => {
 	const lobbyData = await database.hgetall(data.lobby)
+	const gameType = gameTypes[lobbyData.type]
 	games[data.lobby] = {
 		level: 1,
 		answers: [],
-		...generateQuestion()
+		...gameType.generateQuestion()
 	}
 	const game = games[data.lobby]
 	const time = (lobbyData.roundDuration || 10)*1000
@@ -46,7 +23,7 @@ export const startGame = async data => {
 		broker.broadcast(`lobby.game_start`, { type: 'GAME_STARTED', id: data.lobby, level: game.level, proposition: game.proposition, end: Date.now()+time })
 		game.interval = setInterval(() => {
 			game.level++
-			const question = generateQuestion()
+			const question = gameType.generateQuestion()
 			game.answer = question.answer
 			game.answers[game.level] = {}
 			if (game.level >= numberOfRounds) {
