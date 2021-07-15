@@ -11,7 +11,7 @@ export const startGame = async data => {
 	games[data.lobby] = {
 		level: 1,
 		answers: [],
-		...gameType.generateQuestion()
+		...gameType.difficulties[lobbyData.difficulty ?? 0]()
 	}
 	const game = games[data.lobby]
 	const time = (lobbyData.roundDuration || 10)*1000
@@ -23,7 +23,7 @@ export const startGame = async data => {
 		broker.broadcast(`lobby.game_start`, { type: 'GAME_STARTED', id: data.lobby, level: game.level, proposition: game.proposition, end: Date.now()+time })
 		game.interval = setInterval(() => {
 			game.level++
-			const question = gameType.generateQuestion()
+			const question = gameType.difficulties[lobbyData.difficulty ?? 0]()
 			game.answer = question.answer
 			game.answers[game.level] = {}
 			if (game.level >= numberOfRounds) {
