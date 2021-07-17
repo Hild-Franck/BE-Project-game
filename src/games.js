@@ -1,3 +1,5 @@
+import forEach from 'lodash/forEach'
+
 import broker from "./broker"
 import database from "./database"
 import gameTypes from './types'
@@ -8,8 +10,10 @@ const games = {}
 export const startGame = async data => {
 	const lobbyData = await database.hgetall(data.lobby)
 	const gameType = gameTypes[lobbyData.type]
+	const mode = lobbyData.mode ?? "normal"
 	games[data.lobby] = {
 		level: 1,
+		mode,
 		answers: [],
 		...gameType.difficulties[lobbyData.difficulty ?? 0]()
 	}
@@ -22,6 +26,13 @@ export const startGame = async data => {
 	setTimeout(() => {
 		broker.broadcast(`lobby.game_start`, { type: 'GAME_STARTED', id: data.lobby, level: game.level, proposition: game.proposition, end: Date.now()+time })
 		game.interval = setInterval(() => {
+			if (mode == "br")
+				forEach(games.answers, (user, username) => {
+					if (user[game.level] == null) {
+						game.players[username]--
+						broker.broadcast(`lobby.br`, { type: 'LIFE_LOST', id: data.lobby, username })
+					}
+				})
 			game.level++
 			const question = gameType.difficulties[lobbyData.difficulty ?? 0]()
 			game.answer = question.answer
