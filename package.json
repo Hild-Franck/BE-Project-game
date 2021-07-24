@@ -6,7 +6,7 @@
   "scripts": {
     "start:develop": "NODE_ENV=development nodemon --exec babel-node src/index.js --copy-files",
     "start": "node src/index.js",
-    "build": "npm run clean && babel ./src --out-dir dist",
+    "build": "npm run clean && babel ./src --out-dir dist --copy-files",
     "clean": "rm -rf ./dist && mkdir dist",
     "pretest": "eslint src",
     "test": "NODE_ENV=development SECRET=sec nyc --reporter=html --reporter=lcov ava --verbose --timeout=10s;",
