@@ -4,7 +4,7 @@
   "description": "Authentication service for the BE-Project stack",
   "main": "index.js",
   "scripts": {
-    "start:develop": "NODE_ENV=development nodemon --exec babel-node src/index.js",
+    "start:develop": "NODE_ENV=development nodemon --exec babel-node src/index.js --copy-files",
     "start": "node src/index.js",
     "build": "npm run clean && babel ./src --out-dir dist",
     "clean": "rm -rf ./dist && mkdir dist",
@@ -49,6 +49,7 @@
   "dependencies": {
     "@babel/runtime": "^7.4.3",
     "cookie": "^0.4.1",
+    "csv-parse": "^4.16.0",
     "event-emitter": "^0.3.5",
     "hash.js": "^1.1.7",
     "jsonwebtoken": "^8.5.1",
