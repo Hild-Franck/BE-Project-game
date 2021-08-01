@@ -1,0 +1,22 @@
+[
+  { "spell": "accio", "desc": "Il permet d'attirer vers soi par lévitation des objets éloignés" },
+  { "spell": "alohomora", "desc": "Il permet d'ouvrir les portes fermées à clé, et constitue un contre-sort au sortilège de verrouillage Collaporta" },
+  { "spell": "avada kedavra", "desc": "Il tue instantanément la personne visée" },
+  { "spell": "endoloris", "desc": "Il fait ressentir une insupportable douleur à l'être visé (personne ou animal)" },
+  { "spell": "expecto patronum", "desc": "Il fait apparaître un animal argenté appelé patronus" },
+  { "spell": "expelliarmus", "desc": "Il envoie l'arme ou la baguette magique de la personne visée hors d'atteinte de cette dernière, voire propulse la personne même" },
+  { "spell": "impero", "desc": "Il permet de prendre le contrôle d'une personne ou d'un animal et de la ou le faire agir selon sa volonté," },
+  { "spell": "incendio", "desc": "Il fait apparaître un feu froid du bout de la baguette" },
+  { "spell": "flipendo", "desc": "Sortilège permettant de repousser un objet, une créature ou une personne, ou de les frapper à distance" },
+  { "spell": "lumos", "desc": "Un faisceau de lumière apparaît au bout de la baguette" },
+  { "spell": "oubliettes", "desc": "Il efface ou modifie la mémoire d'une personne" },
+  { "spell": "petrificus totalus", "desc": "Il immobilise et raidit totalement la personne visée. La seule partie du corps que ce sortilège ne paralyse pas sont les yeux." },
+  { "spell": "piertotum locomotor", "desc": "Sortilège qui anime les statues et armures" },
+  { "spell": "protego", "desc": "Il fait apparaître devant son auteur un bouclier magique qui renvoie à ses agresseurs les maléfices mineurs, ou les empêche d'entrer en contact physique avec lui" },
+  { "spell": "reducto", "desc": "Il réduit la taille, le volume d'un objet" },
+  { "spell": "reparo", "desc": "Il permet de réparer un objet. Il ne marche que si tous les composants de l'objet sont présents" },
+  { "spell": "sectumsempra", "desc": "Il crée de profondes entailles dans le corps de la personne visée, qui peut très rapidement se vider de son sang" },
+  { "spell": "stupefix", "desc": "La cible entre dans un état second très semblable à un coma" },
+  { "spell": "wingardium leviosa", "desc": "Il permet de faire léviter des objets mais pas de les déplacer horizontalement" },
+  { "spell": "legilimens", "desc": "Il sert à pénétrer l'esprit de la personne visée, et permet à la personne qui le produit de visionner par éclairs divers souvenirs de sa victime" }
+]
