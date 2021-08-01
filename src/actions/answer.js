@@ -1,12 +1,10 @@
-import database from '../database'
-import games, { startGame } from '../games'
+import games from '../games'
 
 const answer = {
 	params: {},
 	handler: async ({ params }) => {
 		const game = games[params.lobby]
 
-		if (!game.answers[params.username]) game.answers[params.username] = []
 		if (params.level != game.level)
 			throw new Error("Not the right level")
 		if (game.answers[params.username][game.level])
@@ -19,7 +17,7 @@ const answer = {
 			if (!answer) game.players[params.username]--
 		}
 		
-		game.answers[params.username][game.level] = answer
+		game.answers[params.username][game.level] = true
 
 		const response = { username: params.username, answer, level: game.level, lobby: params.lobby }
 
