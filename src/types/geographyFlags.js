@@ -14,10 +14,10 @@ const countries = [
 	{ code: "se", name: "Suede" },
 	{ code: "no", name: "Norvege" },
 	{ code: "ie", name: "Irlande" },
-	{ code: "uk", name: "Royaume-Unis" },
+	{ code: "gb", name: "Royaume-Uni" },
 	{ code: "de", name: "Allemagne" },
 	{ code: "pl", name: "Pologne" },
-	{ code: "be", name: "Belge" },
+	{ code: "be", name: "Belgique" },
 ]
 
 const questions = [
