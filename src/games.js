@@ -5,6 +5,7 @@ import filter from 'lodash/filter'
 import broker from "./broker"
 import database from "./database"
 import gameTypes from './types'
+import logger from './logger'
 
 const startingTime = process.eventNames.STARTING_TINE || 3000
 const games = {}
@@ -55,6 +56,8 @@ export const startGame = async data => {
 	const game = games[data.lobby]
 	const time = mode == "br" ? 30 :(lobbyData.roundDuration || 10)
 	const numberOfRounds = lobbyData.numberOfRounds || 10
+
+	logger.info(`New game started for lobby ${data.lobby}`)
 
 	setTimeout(() => {
 		broker.broadcast(`lobby.game_start`, { type: 'GAME_STARTED', id: data.lobby, level: game.level, proposition: game.proposition, end: Date.now()+(time*1000) })

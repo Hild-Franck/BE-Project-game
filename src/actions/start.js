@@ -12,7 +12,7 @@ const start = {
 		// if (lobby.state !== "PENDING")
 		// 	throw new Error("Game already started")
 
-		const result = await database.hmset(params.lobby, "state", "STARTING")
+		await database.hmset(params.lobby, "state", "STARTING")
 		
 		startGame(params)
 		return { nodeID }
