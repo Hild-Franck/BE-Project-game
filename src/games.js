@@ -30,7 +30,7 @@ const updateGame = (lobbyData, game, mode, time, gameType, numberOfRounds, data)
 	const question = gameType.difficulties[lobbyData.difficulty ?? 0]()
 	game.answer = question.answer
 	const playersAlive = filter(game.players, lives => lives > 0)
-	if ((game.level > numberOfRounds && mode != "br") || playersAlive.length <= 1 ) {
+	if ((mode == "br" && playersAlive.length <= 1) || game.level > numberOfRounds) {
 		delete games[data.lobby]
 		return broker.broadcast(`lobby.game_end`, { type: 'GAME_ENDED', id: data.lobby, level: game.level })
 	}
