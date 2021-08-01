@@ -10,7 +10,7 @@ const answer = {
 		if (game.answers[params.username][game.level])
 			throw new Error("Already answered")
 		
-		const answer = params.answer == game.answer
+		const answer = game.check(game.answer, params.answer)
 
 		if (game.mode === "br") {
 			if (!game.players[params.username]) throw new Error("No life remaining")

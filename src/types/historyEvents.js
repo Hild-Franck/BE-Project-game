@@ -19,7 +19,8 @@ const historyEvents = {
 	subcategory: "evenements",
 	difficulties: [
 		() => questions[0](),
-	]
+	],
+	check: (playerAnswer, answer) => playerAnswer == answer
 }
 
 export default historyEvents

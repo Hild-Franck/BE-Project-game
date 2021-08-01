@@ -61,7 +61,8 @@ const mathAlgebra = {
 			const question = randomInt(3,0)
 			return questions[question](5)
 		}
-	]
+	],
+	check: (playerAnswer, answer) => playerAnswer == answer
 }
 
 export default mathAlgebra

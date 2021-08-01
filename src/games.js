@@ -45,6 +45,7 @@ export const startGame = async data => {
 	games[data.lobby] = {
 		level: 1,
 		mode,
+		check: gameType.check,
 		answers: reduce(data.players, (acc, username) => ({
 			...acc, [username]: []
 		}), {}),
