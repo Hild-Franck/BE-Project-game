@@ -35,7 +35,10 @@ const updateGame = (lobbyData, game, mode, time, gameType, numberOfRounds, data)
 		return broker.broadcast(`lobby.game_end`, { type: 'GAME_ENDED', id: data.lobby, level: game.level })
 	}
 	broker.broadcast(`lobby.in_game`, { type: 'IN_PROGRESS', id: data.lobby, level: game.level, proposition: question.proposition, end: Date.now()+(newTime*1000) })
-	setTimeout(updateGame, (newTime*1000), lobbyData, game, mode, newTime, gameType, numberOfRounds, data)
+	setTimeout(() => {
+		broker.broadcast(`lobby.pause_game`, { type: 'GAME_PAUSE', id: data.lobby, level: game.level, answer: question.answer, end: Date.now()+5000 })
+		setTimeout(updateGame, (5000), lobbyData, game, mode, newTime, gameType, numberOfRounds, data)
+	}, (newTime*1000))
 }
 
 export const startGame = async data => {
@@ -59,10 +62,13 @@ export const startGame = async data => {
 	const numberOfRounds = lobbyData.numberOfRounds || 10
 
 	logger.info(`New game started for lobby ${data.lobby}`)
-
+	broker.broadcast(`lobby.game_starting`, { type: 'GAME_STARTING', id: data.lobby, end: Date.now()+startingTime })
 	setTimeout(() => {
 		broker.broadcast(`lobby.game_start`, { type: 'GAME_STARTED', id: data.lobby, level: game.level, proposition: game.proposition, end: Date.now()+(time*1000) })
-		setTimeout(updateGame, (time*1000), lobbyData, game, mode, time, gameType, numberOfRounds, data)
+		setTimeout(() => {
+			broker.broadcast(`lobby.pause_game`, { type: 'GAME_PAUSE', id: data.lobby, level: game.level, answer: game.answer, end: Date.now()+5000 })
+			setTimeout(updateGame, (5000), lobbyData, game, mode, time, gameType, numberOfRounds, data)
+		}, (time*1000))
 	}, startingTime)
 }
 
