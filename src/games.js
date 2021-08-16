@@ -53,7 +53,7 @@ export const startGame = async data => {
 			...acc, [username]: []
 		}), {}),
 		players: reduce(data.players, (acc, username) => ({
-			...acc, [username]: 3
+			...acc, [username]: lobbyData.numberOfLives
 		}), {}),
 		...gameType.difficulties[lobbyData.difficulty ?? 0]()
 	}
