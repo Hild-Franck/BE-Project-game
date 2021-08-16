@@ -22,6 +22,10 @@ const answer = {
 		const response = { username: params.username, answer, level: game.level, lobby: params.lobby }
 
 		if (game.mode === "br") response.lives = game.players[params.username]
+		
+		const allAnswered = Object.keys(game.answers).every(key => game.answers[key][game.level] != undefined)
+
+		if (allAnswered) game.forceUpdate()
 
 		return response
 	}

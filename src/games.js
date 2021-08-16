@@ -16,7 +16,7 @@ const setBrTime = (previousTime, level) => {
 	return previousTime-1
 }
 
-const updateGame = (lobbyData, game, mode, time, gameType, numberOfRounds, data) => {
+export const updateGame = (lobbyData, game, mode, time, gameType, numberOfRounds, data) => {
 	if (mode == "br") {
 		forEach(game.answers, (a, b) => {
 			if (a[game.level] == undefined) {
@@ -27,6 +27,7 @@ const updateGame = (lobbyData, game, mode, time, gameType, numberOfRounds, data)
 	}
 	game.level++
 	const newTime = mode == "br" ? setBrTime(time, game.level) : time
+	game.time = newTime
 	const question = gameType.difficulties[lobbyData.difficulty ?? 0]()
 	game.answer = question.answer
 	const playersAlive = filter(game.players, lives => lives > 0)
@@ -35,7 +36,7 @@ const updateGame = (lobbyData, game, mode, time, gameType, numberOfRounds, data)
 		return broker.broadcast(`lobby.game_end`, { type: 'GAME_ENDED', id: data.lobby, level: game.level })
 	}
 	broker.broadcast(`lobby.in_game`, { type: 'IN_PROGRESS', id: data.lobby, level: game.level, proposition: question.proposition, end: Date.now()+(newTime*1000) })
-	setTimeout(() => {
+	game.timeout = setTimeout(() => {
 		broker.broadcast(`lobby.pause_game`, { type: 'GAME_PAUSE', id: data.lobby, level: game.level, answer: question.answer, end: Date.now()+5000 })
 		setTimeout(updateGame, (5000), lobbyData, game, mode, newTime, gameType, numberOfRounds, data)
 	}, (newTime*1000))
@@ -45,9 +46,22 @@ export const startGame = async data => {
 	const lobbyData = await database.hgetall(data.lobby)
 	const gameType = gameTypes[lobbyData.type]
 	const mode = lobbyData.mode || "normal"
-	games[data.lobby] = {
+	const time = mode == "br" ? 30 :(lobbyData.roundDuration || 10)
+	const numberOfRounds = lobbyData.numberOfRounds || 10
+
+	const game = {
+		forceUpdate: () => {
+			logger.info("Forcing update...")
+			clearTimeout(game.timeout)
+			broker.broadcast(`lobby.pause_game`, { type: 'GAME_PAUSE', id: data.lobby, level: game.level, answer: game.answer, end: Date.now()+5000 })
+			const newTime = mode == "br" ? setBrTime(time, game.level+1) : game.time
+			game.time = newTime
+			setTimeout(updateGame, (5000), lobbyData, game, mode, newTime, gameType, numberOfRounds, data)
+		},
 		level: 1,
 		mode,
+		time,
+		timeout: null,
 		check: gameType.check,
 		answers: reduce(data.players, (acc, username) => ({
 			...acc, [username]: []
@@ -57,15 +71,13 @@ export const startGame = async data => {
 		}), {}),
 		...gameType.difficulties[lobbyData.difficulty ?? 0]()
 	}
-	const game = games[data.lobby]
-	const time = mode == "br" ? 30 :(lobbyData.roundDuration || 10)
-	const numberOfRounds = lobbyData.numberOfRounds || 10
+	games[data.lobby] = game
 
 	logger.info(`New game started for lobby ${data.lobby}`)
 	broker.broadcast(`lobby.game_starting`, { type: 'GAME_STARTING', id: data.lobby, end: Date.now()+startingTime })
 	setTimeout(() => {
 		broker.broadcast(`lobby.game_start`, { type: 'GAME_STARTED', id: data.lobby, level: game.level, proposition: game.proposition, end: Date.now()+(time*1000) })
-		setTimeout(() => {
+		game.timeout = setTimeout(() => {
 			broker.broadcast(`lobby.pause_game`, { type: 'GAME_PAUSE', id: data.lobby, level: game.level, answer: game.answer, end: Date.now()+5000 })
 			setTimeout(updateGame, (5000), lobbyData, game, mode, time, gameType, numberOfRounds, data)
 		}, (time*1000))
